@@ -229,7 +229,6 @@ export default class ShoeShop extends Component {
         </div>
         <h2 className="my-5 text-success">--- Sản phẩm của chúng tôi ---</h2>
 
-        {/* hien thi danh sach san pham  */}
         <ProductList
           addToCart={this.addToCart}
           productList={this.productList}
