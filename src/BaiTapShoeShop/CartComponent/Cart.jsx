@@ -94,15 +94,6 @@ export default class Cart extends Component {
                 <tbody>{this.showCart()}</tbody>
               </table>
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
           </div>
         </div>
       </div>
