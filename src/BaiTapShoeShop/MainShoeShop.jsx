@@ -156,68 +156,72 @@ export default class ShoeShop extends Component {
       name: name,
       price: price,
       image: image,
-      soLuong: 1, //thuộc tính "soLuong" là số lượng sản phẩm thêm vào giỏ hàng (1 sản phẩm mỗi lần thêm), khác với "Quantity" là thông tin số lượng còn lại của mỗi sản phẩm từ mảng dữ liệu ProductList.
+      soLuong: 1, //thuộc tính "soLuong" là số lượng sản phẩm khi thêm mới 1 sản phẩm vào giỏ hàng (1 sản phẩm mỗi lần thêm), khác với "Quantity" là thông tin số lượng còn lại của mỗi sản phẩm từ mảng dữ liệu ProductList.
     };
-    let productCartUpdate = [...this.state.productCart];
+    let productCartUpdate = [...this.state.productCart]; //tạo mảng giỏ hàng clone để phục vụ cho việc cập nhật các thay đổi lên mảng giỏ hàng gốc
 
     //Tìm sản phẩm đã có sẵn trong giỏ hàng để xử lý số lượng khi thêm lại sản phẩm đó. Nếu sản phẩm đã có trong giỏ hàng thì không cần thêm lại sản phẩm mà chỉ tăng số lượng lên 1.
     let productFind = this.state.productCart.find((productCart) => {
       return productCart.id === productNew.id;
     });
     if (productFind) {
-      productFind.soLuong += 1;
+      productFind.soLuong += 1; //Nếu sản phẩm đã sẵn có trong giỏ hàng (có productFind) thì tăng số lượng sản phẩm thêm 1
     } else {
-      productCartUpdate.push(productNew);
+      productCartUpdate.push(productNew); //Nếu chưa có sản phẩm trong giỏ hàng thì thêm sản phẩm đó vào mảng giỏ hàng
     }
     alert(`Thêm sản phẩm "${productNew.name}" vào giỏ hàng thành công!`);
     this.setState({
-      productCart: productCartUpdate,
+      productCart: productCartUpdate, //cập nhật mảng giỏ hàng
     });
   };
 
   deleteFromCart = (productID) => {
-    let productCartUpdate = [...this.state.productCart];
+    let productCartUpdate = [...this.state.productCart]; //tạo mảng giỏ hàng clone để phục vụ cho việc cập nhật các thay đổi lên mảng giỏ hàng gốc
 
     let index = productCartUpdate.findIndex(
-      (productCart) => productCart.id === productID
+      (productCart) => productCart.id === productID //tìm index sản phẩm có id trùng với id cần xóa trong mảng giỏ hàng clone
     );
 
     if (index > -1) {
-      productCartUpdate.splice(index, 1);
+      productCartUpdate.splice(index, 1); //nếu trong mảng giỏ hàng với id trùng với id sản phẩm cần xóa (index trả về >-1) thì xóa chổ vị trí index ấy
     }
 
     this.setState({
-      productCart: productCartUpdate,
+      productCart: productCartUpdate, //cập nhật mảng giỏ hàng
     });
   };
 
   updateSoLuong = (productID, soLuongNew) => {
-    let productFind = this.state.productCart.find(
+    let productCartUpdate = [...this.state.productCart]; //tạo mảng clone
+
+    let index = productCartUpdate.findIndex(
       (productCart) => productCart.id === productID
-    );
+    ); //tìm sản phẩm cần cập nhật số lượng trong mảng giỏ hàng dựa trên id sản phẩm
 
-    if (productFind) {
-      productFind.soLuong += soLuongNew;
+    if (index > -1) {
+      let productToUpdate = productCartUpdate[index];
 
-      if (productFind.soLuong < 1) {
+      productToUpdate.soLuong += soLuongNew; //nếu có sản phẩm đó thì tăng số lượng 1 lượng bằng số lượng cần tăng (soLuongNew)
+
+      if (productToUpdate.soLuong < 1) {
         alert("Bạn không thể giảm số lượng sản phẩm về 0");
-        productFind.soLuong = 1;
+        productToUpdate.soLuong = 1; //nếu giảm số lượng về 0 thì đồng nghĩa với việc xóa sản phẩm, mà đó là việc của tính năng xóa sản phẩm rồi chứ không còn là cập nhật số lượng sản phẩm, nên giữ số lượng là 1.
       }
-    }
 
-    this.setState({
-      productCart: this.state.productCart,
-    });
+      this.setState({
+        productCart: productCartUpdate,
+      });
+    }
   };
 
   render() {
     return (
       <div>
         <div className="row my-4">
-          <div className="col-9">
+          <div className="col-10">
             <h1>Bài tập Shoe Shop</h1>
           </div>
-          <div className="col-3">
+          <div className="col-2">
             <p
               data-toggle="modal"
               data-target="#exampleModal"
@@ -228,17 +232,19 @@ export default class ShoeShop extends Component {
           </div>
         </div>
         <h2 className="my-5 text-success">--- Sản phẩm của chúng tôi ---</h2>
-
-        <ProductList
-          addToCart={this.addToCart}
-          productList={this.productList}
-        />
-
-        <Cart
-          updateSoLuong={this.updateSoLuong}
-          deleteFromCart={this.deleteFromCart}
-          productCart={this.state.productCart}
-        />
+        <div className="container-fluid">
+          {/* truyền mảng productList vàphương thức addToCart xuống cho thành phần con productList: */}
+          <ProductList
+            addToCart={this.addToCart}
+            productList={this.productList}
+          />
+          {/* truyền phương thức updateSoLuong, phương thức deleteFromCart và mảng productCart (từ state) xuống thành phần con Cart */}
+          <Cart
+            updateSoLuong={this.updateSoLuong}
+            deleteFromCart={this.deleteFromCart}
+            productCart={this.state.productCart}
+          />
+        </div>
       </div>
     );
   }

@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 
 export default class Cart extends Component {
+  //Phương thức để render nội dung giỏ hàng
   showCart = () => {
-    let { productCart, deleteFromCart, updateSoLuong } = this.props;
+    let { productCart, deleteFromCart, updateSoLuong } = this.props; //nhận mảng productCart, phương thức deleteFromCart và phương thức updateSoLuong từ ShoeShop
 
-    return productCart.map((proCart) => {
-      let { id, name, price, soLuong, image } = proCart;
+    return productCart.map((productCart) => {
+      let { id, name, price, soLuong, image } = productCart;
       return (
-        <tr key={`cart${id}`}>
+        <tr key={`product-${id}`}>
           <td>{id}</td>
           <td>
-            <img style={{ width: "50px" }} src={image} alt="" />
+            <img style={{ width: "60px" }} src={image} alt="" />
           </td>
           <td>{name}</td>
           <td>
@@ -53,6 +54,20 @@ export default class Cart extends Component {
       );
     });
   };
+  //Phương thức tính tổng giá tiền tất cả sản phẩm trong giỏ hàng
+  calculateTotalPrice = () => {
+    let { productCart } = this.props;
+
+    if (!productCart || productCart.length === 0) {
+      return 0; // Trả về 0 nếu giỏ hàng rỗng hoặc chưa được khởi tạo
+    }
+
+    let totalPrice = 0;
+    productCart.forEach((product) => {
+      totalPrice += product.price * product.soLuong;
+    });
+    return totalPrice;
+  };
 
   render() {
     return (
@@ -66,7 +81,10 @@ export default class Cart extends Component {
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
+              <h5
+                className="modal-title font-weight-bold"
+                id="exampleModalLabel"
+              >
                 Giỏ hàng
               </h5>
               <button
@@ -82,17 +100,36 @@ export default class Cart extends Component {
               <table className="table">
                 <thead>
                   <tr>
-                    <th scope="col">Mã</th>
-                    <th scope="col">Hình ảnh</th>
-                    <th scope="col">Tên sản phẩm</th>
-                    <th scope="col">Số lượng</th>
-                    <th scope="col">Giá</th>
-                    <th scope="col">Thành tiền</th>
+                    <th scope="col" className="text-align-center">
+                      Mã
+                    </th>
+                    <th scope="col" className="text-align-center">
+                      Hình
+                    </th>
+                    <th scope="col" className="text-align-center">
+                      Tên
+                    </th>
+                    <th scope="col" className="text-align-center">
+                      {" "}
+                      Số lượng
+                    </th>
+                    <th scope="col" className="text-align-center">
+                      Đơn giá
+                    </th>
+                    <th scope="col" className="text-align-center">
+                      Thành tiền
+                    </th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>{this.showCart()}</tbody>
               </table>
+              <p>
+                <span className="font-weight-bold">
+                  Tổng tiền phải thanh toán:
+                </span>{" "}
+                {this.calculateTotalPrice()} USD
+              </p>
             </div>
           </div>
         </div>

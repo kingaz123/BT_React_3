@@ -1,26 +1,24 @@
 import React, { Component } from "react";
 
 export default class Product extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showModal: false,
-    };
-  }
+  state = {
+    showModal: false, //mặc định là không hiển thị modal thông tin chi tiết của sản phẩm
+  };
 
   openModal = () => {
     this.setState({ showModal: true });
-  };
+  }; //khi gọi phương thức openModal thì chuyển đổi giá trị thuộc tính showModal thành true để hiển thị modal thông tin chi tiết sản phẩm
 
   closeModal = () => {
-    this.setState({ showModal: false });
+    this.setState({ showModal: false }); //khi gọi phương thức closeModal thì chuyển đổi giá trị thuộc tính showModal thành true để ẩn modal thông tin chi tiết sản phẩm
   };
 
   render() {
-    const { product, addToCart } = this.props;
-    const { image, name, price, shortDescription, quantity } = product;
+    const { product, addToCart } = this.props; //nhận đối tượng sản phẩm và phương thức addToCart được truyền xuống từ productList
+    const { image, name, price, description, quantity } = product; //Bóc tách các thuộc tính của đối tượng product tương tứng
 
     return (
+      //render thẻ sản phẩm trên giao diện
       <div className="card">
         <img src={image} className="card-img-top" alt="..." />
         <div className="card-body">
@@ -39,7 +37,7 @@ export default class Product extends Component {
             Chi tiết
           </button>
         </div>
-
+        {/* Bootstrap Modal thông tin chi tiết sản phẩm (state mặc định là bị ẩn đi) */}
         <div
           className={`modal fade ${this.state.showModal ? "show" : ""}`}
           tabIndex="-1"
@@ -64,10 +62,10 @@ export default class Product extends Component {
                 <img
                   src={image}
                   alt={name}
-                  style={{ maxWidth: "100%", maxHeight: "400px" }}
+                  style={{ maxWidth: "100%", maxHeight: "300px" }}
                 />
-                <p className="font-weight-bold">Mô tả ngắn:</p>
-                <p>{shortDescription}</p>
+                <p className="font-weight-bold">Mô tả:</p>
+                <p>{description}</p>
                 <p>
                   <span className="font-weight-bold">Giá: </span>
                   {price} USD
